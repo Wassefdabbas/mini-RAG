@@ -1,12 +1,12 @@
-from pydantic import BaseModel, Filed, validator
+from pydantic import BaseModel, Field, validator
 from typing import Optional
 from bson.objectid import ObjectId
 
 class DataChunk(BaseModel):
-    _id: Optional[ObjectId]
-    chunk_text: str = Filed(..., min_length=1)
+    id: Optional[ObjectId] = Field(default=None, alias="_id")
+    chunk_text: str = Field(..., min_length=1)
     chunk_metadata: dict
-    chunk_order: int = Filed(..., gt=0)
+    chunk_order: int = Field(..., gt=0)
     chunk_project_id: ObjectId
     
     
