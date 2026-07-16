@@ -10,3 +10,5 @@ class ResponseStatus(Enum):
     FILE_UPLOAD_FAILED = "File upload failed."
     PROCESSING_SUCCESS = "File processed successfully."
     PROCESSING_FAILED = "File processing failed."
+    NO_FILES_TO_PROCESS = "No files to process"
+    NO_FILES_ID = "No file with the given ID found in the project"
