@@ -8,9 +8,29 @@ class ChunkModel(BaseDataModel):
     
     def __init__(self, db_client: object):
         super().__init__(db_client=db_client)
-        
         self.collection = self.db_client[DatabaseEnum.COLLECTION_CHUNK_NAME.value]
         
+    # we build this function, because __init__ cannot be async, and we need to create the collection and indexes if they don't exist
+    # so this call init as normal and init_collection as async.
+    @classmethod
+    async def create_instance(cls, db_client: object):
+        instance = cls(db_client=db_client)
+        await instance.init_collection()
+        return instance
+    
+    async def init_collection(self):
+        all_collections = await self.db_client.list_collection_names()
+        
+        if DatabaseEnum.COLLECTION_CHUNK_NAME.value not in all_collections:
+            self.collection = await self.db_client.create_collection(DatabaseEnum.COLLECTION_CHUNK_NAME.value)
+            indexes = DataChunk.get_indexes()
+            
+            for index in indexes:
+                await self.collection.create_index(index["key"], 
+                                                   name=index["name"], 
+                                                   unique=index["unique"])
+                
+    
     # do not inster chunk one by one in database, this is too slow, and bad for database
     # we need to use 'Batch Insert' to insert multiple chunks at once, this is much faster and better for database
     async def create_chunk(self, chunk: DataChunk):
