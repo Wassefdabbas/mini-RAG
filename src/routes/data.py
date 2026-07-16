@@ -89,7 +89,6 @@ async def process_file(request: Request,
     
     project_files_ids = {}
     if process_request.file_id:
-        # TODO
         asset_record = await asset_model.get_asset_by_id(asset_project_id=project.id, asset_name=process_request.file_id)
         
         if asset_record is None:
